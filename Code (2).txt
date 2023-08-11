@@ -1,0 +1,48 @@
+// Include necessary libraries
+#include <Wire.h>
+#include <LiquidCrystal.h>
+
+// Define the pin for the gas sensor
+#define GAS_SENSOR_PIN A0
+
+// Initialize the LiquidCrystal library
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+void setup() {
+  // Initialize serial communication
+  Serial.begin(9600);
+
+  // Initialize the LCD
+  lcd.begin(16, 2);
+  lcd.print("Air Quality:");
+  
+  // Set the gas sensor pin as input
+  pinMode(GAS_SENSOR_PIN, INPUT);
+}
+
+void loop() {
+  // Read analog value from the gas sensor
+  int sensorValue = analogRead(GAS_SENSOR_PIN);
+  
+  // Convert analog value to voltage (0-5V range)
+  float voltage = (sensorValue / 1024.0) * 5.0;
+  
+  // Convert voltage to air quality index (replace these coefficients with sensor-specific values)
+  float airQualityIndex = map(voltage, 0.2, 4.0, 0, 500);
+
+  // Display air quality on the LCD
+  lcd.setCursor(0, 1);
+  lcd.print("AQI: ");
+  lcd.print(airQualityIndex);
+
+  // Print air quality information to the serial monitor
+  Serial.print("Sensor Value: ");
+  Serial.print(sensorValue);
+  Serial.print(", Voltage: ");
+  Serial.print(voltage);
+  Serial.print(", AQI: ");
+  Serial.println(airQualityIndex);
+
+  // Delay before the next reading
+  delay(5000);
+}
